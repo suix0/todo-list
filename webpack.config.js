@@ -7,9 +7,19 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  devtool: 'inline-source-map',
   plugins: [
     new htmlWebpackPlugin({
+      template: "./src/index.html",
       title: "Todo List"
     }),
   ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  }
 };
