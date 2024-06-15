@@ -13,8 +13,8 @@ export default function task(title, description, dueDate, priority) {
   } else {
     return { title, description, dueDate, priority }
   }
-
-  return { newTitle, description, dueDate, priority }
+  title = newTitle;
+  return { title, description, dueDate, priority }
 }
 
 const addTaskBtn = document.querySelector(".addTask");
