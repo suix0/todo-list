@@ -6,11 +6,32 @@
   <title></title>
 </head>
 <body>
+  <dialog data-modal> 
+    <form action="#">
+      <label for="taskTitle">Title</label>
+      <input type="text" id="taskTitle" name="taskTitle" required>
+
+      <label for="taskDescription">Description</label>
+      <textarea id="taskDescription" name="taskDescription" rows="10" cols="50"></textarea>
+
+      <label for="taskDueDate">Due Date</label>
+      <input type="datetime-local" name="taskDueDate" id="taskDueDate">
+
+      <label for="taskPriority">Priority</label>
+      <select name="taskPriority" id="taskPriority">
+        <option value="3">High Priority</option>
+        <option value="2">Medium Priority</option>
+        <option value="1">Low Priority</option>
+      </select>
+      <button type="submit">Submit</button>
+    </form>
+  </dialog>
+
   <aside class="projects"></aside>
 
   <div class="tasks">
     <ul>
-      <li><a>Add Task</a></li>
+      <li><a class="addTask">Add Task</a></li>
     </ul>
   </div>
 </body>

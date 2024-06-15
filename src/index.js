@@ -1,5 +1,5 @@
 import './styles.css';
-import newTask from './createTodo.js';
+import createTodo from './createTodo.js';
 
 export default function task(title, description, dueDate, priority) {
   
@@ -17,4 +17,5 @@ export default function task(title, description, dueDate, priority) {
   return { newTitle, description, dueDate, priority }
 }
 
-newTask()
+const addTaskBtn = document.querySelector(".addTask");
+addTaskBtn.addEventListener("click", createTodo);
