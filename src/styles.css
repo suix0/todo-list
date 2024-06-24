@@ -1,3 +1,7 @@
 .addTask {
   cursor: pointer;
 }
+
+.task {
+  cursor: pointer;
+}
