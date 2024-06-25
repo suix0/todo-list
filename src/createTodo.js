@@ -1,6 +1,5 @@
 import task from "./index.js";
 import { openModal, closeModal, displayTasks } from "./dom.js";
-import editTodo from "./editTodo.js";
 
 const modal = document.querySelector("[data-modal]");
 const taskForm = document.querySelector("form");
@@ -11,7 +10,6 @@ export function formAddTaskDetails(event) {
   event.preventDefault();
 
   const elements = taskForm.elements;
-
   const taskTitle = elements['taskTitle'].value;
   const taskDescription = elements['taskDescription'].value;
   const taskDueDate = elements['taskDueDate'].value;
@@ -23,7 +21,6 @@ export function formAddTaskDetails(event) {
   closeModal(modal);
 
   displayTasks(tasksContainer, newTask);
-  editTodo();
 }
 
 export default function createTodo() {

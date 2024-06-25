@@ -1,6 +1,5 @@
 import './styles.css';
 import createTodo from './createTodo.js';
-import editTodo from './editTodo.js';
 
 export default function task(title, description, dueDate, priority) {
   
@@ -20,7 +19,5 @@ export default function task(title, description, dueDate, priority) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const addTaskBtn = document.querySelector(".addTask");
-  addTaskBtn.addEventListener("click", createTodo);
-  
-  editTodo();
+  addTaskBtn.addEventListener("click", createTodo);  
 })

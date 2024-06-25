@@ -2,38 +2,34 @@ import { openModal, closeModal, editTaskDom }from './dom.js';
 import task from './index.js';
 import { formAddTaskDetails } from './createTodo.js';
 
-export default function editTodo() {
+export default function editTodo(taskToEdit) {
   const modal = document.querySelector("[data-modal]");
   const taskForm = document.querySelector("form");
-  const tasks = document.querySelectorAll('.task');
+  
+  taskToEdit.addEventListener('click', () => {
+    taskForm.removeEventListener('submit', formAddTaskDetails);
+    const taskNumber = taskToEdit.getAttribute('data-task-number');
+    openModal(modal);
+    if (taskForm.dataset.listenerAdded) {
+      taskForm.addEventListener('submit', (event) => {
+        event.preventDefault();
 
-  [...tasks].forEach(taskDom => {
-    if (!taskDom.dataset.listenerAdded) {
-      taskDom.addEventListener('click', () => {
-        openModal(modal);
-        if (taskForm.dataset.listenerAdded) {
-          taskForm.removeEventListener('submit', formAddTaskDetails);
-          taskForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const taskNumber = taskDom.getAttribute('data-task-number');
-      
-            const elements = taskForm.elements;
-        
-            const taskTitle = elements['taskTitle'].value;
-            const taskDescription = elements['taskDescription'].value;
-            const taskDueDate = elements['taskDueDate'].value;
-            const taskPriority = parseInt(elements['taskPriority'].value);
-        
-            const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
-      
-            editTaskDom(taskNumber, newTask);
+        const elements = taskForm.elements;
 
-            taskForm.reset();
-            closeModal(modal);
-          });
-        }
+        const taskTitle = elements['taskTitle'].value;
+        const taskDescription = elements['taskDescription'].value;
+        const taskDueDate = elements['taskDueDate'].value;
+        const taskPriority = parseInt(elements['taskPriority'].value);
+
+        const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
+
+        taskForm.reset();
+        closeModal(modal);
+
+        editTaskDom(taskNumber, taskToEdit, newTask);
       })
     }
-    taskDom.dataset.listenerAdded = "";
+    taskForm.dataset.listenerAdded = "";
   })
 }
+
