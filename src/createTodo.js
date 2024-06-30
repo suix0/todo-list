@@ -22,12 +22,11 @@ export default function createTodo() {
     const taskTitle = elements.taskTitle.value;
     const taskDescription = elements.taskDescription.value;
     const taskDueDate = elements.taskDueDate.value;
-    const taskPriority = elements.taskPriority.value;
-    
+    const taskPriority = parseInt(elements.taskPriority.value);
+
     // Create task based on user input
     const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
     displayTasks(taskContainer, newTask);
-  
   
     // Close form
     closeModal(modal);
@@ -36,13 +35,4 @@ export default function createTodo() {
     addTaskForm.remove();
     modal.remove();
   });
-  
 }
-
-// function submitAddForm(event, taskForm) {
-//   event.preventDefault();
-
-//   const taskFormElements = taskForm.elements;
-
-//   const title = taskFormElements.taskTitle;
-// }

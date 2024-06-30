@@ -1,4 +1,5 @@
 import task from './index.js';
+import editTask from './editTodo.js';
 
 function setAttributes(element, attributes) {
   for (const key in attributes) {
@@ -124,13 +125,12 @@ function displayTasks(container, task) {
     taskContainer.appendChild(taskDueDateDom);
   }
   
-  // editTodo(taskContainer);
+  editTask(taskContainer);
   container.appendChild(taskContainer);
   i++;
 }
 
-function editTaskDom(taskToEdit, task) {
-  const taskNumber = taskToEdit.getAttribute("data-task-number");
+function editTaskDom(taskToEdit, taskNumber, task) {
   const taskTitleDom = document.querySelector(`.taskTitle${taskNumber}`);
   taskTitleDom.textContent = task.title;
 
