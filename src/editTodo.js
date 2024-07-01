@@ -1,22 +1,21 @@
 import { openModal, closeModal, createForm, editTaskDom } from './dom.js';
 import task from './index.js';
 
-export default function editTask(taskToEdit) {
-  // add event listener to the taskToEdit to open the form
-  if (!taskToEdit.dataset.listenerAdded) {
-    taskToEdit.addEventListener('click', () => {
+export default function editTask(taskEditBtn, taskNumber) {
+  // add event listener to the taskEditBtn to open the form
+  if (!taskEditBtn.dataset.listenerAdded) {
+    taskEditBtn.addEventListener('click', () => {
       // create and open the form
       createForm();
     
       const editTaskForm = document.querySelector('form');
       const modal = document.querySelector('dialog');
+      const taskToEdit = document.querySelector(`[data-task-number="${String(taskNumber)}"]`);
       openModal(modal);
 
       // add event listener to form upon submit
       editTaskForm.addEventListener('submit', (event) => {
         event.preventDefault();
-
-        const taskNumber = taskToEdit.getAttribute('data-task-number');
 
         // get the values that user inputs
         const elements = editTaskForm.elements;
@@ -26,7 +25,7 @@ export default function editTask(taskToEdit) {
         const taskDueDate = elements.taskDueDate.value;
         const taskPriority = parseInt(elements.taskPriority.value);
 
-        // edit the taskToEdit's details
+        // edit the taskEditBtn's details
         const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
 
         // remove the form and modal
@@ -34,9 +33,8 @@ export default function editTask(taskToEdit) {
         modal.remove();
 
         editTaskDom(taskToEdit, taskNumber, newTask);
-
       })
     })
   }
-  taskToEdit.dataset.listenerAdded = true;
+  taskEditBtn.dataset.listenerAdded = true;
 }

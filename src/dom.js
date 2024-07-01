@@ -102,7 +102,6 @@ function createForm() {
   document.body.appendChild(modal);
 } 
 
-
 function openModal(modal) {
   modal.show();
 }
@@ -135,8 +134,24 @@ function displayTasks(container, task) {
     taskDueDateDom.textContent = task.dueDate;
     taskContainer.appendChild(taskDueDateDom);
   }
+
+  // add an edit button for a task
+  const editBtn = document.createElement('button');
+  editBtn.classList.add("editTask");
+  editBtn.textContent = "Edit";
+  taskContainer.appendChild(editBtn);
+
+  // add a delete button for a task
+  const deleteBtn = document.createElement('button');
+  deleteBtn.classList.add("deleteTask");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.addEventListener('click', () => {
+    taskContainer.remove();
+  })
+  taskContainer.appendChild(deleteBtn);
+
   
-  editTask(taskContainer);
+  editTask(editBtn, i);
   container.appendChild(taskContainer);
   i++;
 }
