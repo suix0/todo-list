@@ -17,7 +17,6 @@ export default function editTask(taskToEdit) {
         event.preventDefault();
 
         const taskNumber = taskToEdit.getAttribute('data-task-number');
-        console.log(taskNumber);
 
         // get the values that user inputs
         const elements = editTaskForm.elements;

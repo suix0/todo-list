@@ -10,7 +10,18 @@ function setAttributes(element, attributes) {
 function createForm() {
   const form = document.createElement("form");
   const modal = document.createElement("dialog");
+
+  // Add a close button to close modal
+  const closeBtn = document.createElement("a");
+  closeBtn.classList.add("closeModal");
   modal.setAttribute('data-modal', "");
+  closeBtn.textContent = "Close";
+  closeBtn.addEventListener('click', () => {
+    closeModal(modal);
+    modal.remove();
+    form.remove();
+  });
+  form.appendChild(closeBtn);
 
   // Create input for task title
   const titleAttributes = {
