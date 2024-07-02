@@ -106,21 +106,30 @@ function createForm() {
 function createAddProjectForm() {
   const form = document.createElement("form");
   const modal = document.createElement("dialog");
+  modal.setAttribute('data-modal', '');
   form.setAttribute('action', '#');
   modal.appendChild(form);
 
   // Create form label for project name
   const projectName = document.createElement("label");
-  projectName.textContent = "Name";
+  projectName.textContent = "Project Name";
   projectName.setAttribute("name", "projectName");
 
   const projectNameInput = document.createElement('input');
-  // Create form input
   const projectNameAttributes = {
+    // Create form input
     'name': 'projectName',
     'id': 'projectName',
     'required': ''
   };
+
+  const submitBtn = document.createElement("button");
+  submitBtn.textContent = "Submit";
+  submitBtn.setAttribute("type", "submit");
+
+  form.appendChild(projectName);
+  form.appendChild(projectNameInput);
+  form.appendChild(submitBtn);
 
   setAttributes(projectNameInput, projectNameAttributes);
 
@@ -219,4 +228,4 @@ function displayTasks(tasks, tasksContainer) {
   document.body.appendChild(tasksContainer);
 }
 
-export { createForm, openModal, closeModal, createTask, editTaskDom }
+export { createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm }
