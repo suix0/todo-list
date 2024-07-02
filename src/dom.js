@@ -1,6 +1,7 @@
 import task from './index.js';
 import editTask from './editTodo.js';
 
+
 function setAttributes(element, attributes) {
   for (const key in attributes) {
     element.setAttribute(key, attributes[key]);
@@ -102,6 +103,31 @@ function createForm() {
   document.body.appendChild(modal);
 } 
 
+function createAddProjectForm() {
+  const form = document.createElement("form");
+  const modal = document.createElement("dialog");
+  form.setAttribute('action', '#');
+  modal.appendChild(form);
+
+  // Create form label for project name
+  const projectName = document.createElement("label");
+  projectName.textContent = "Name";
+  projectName.setAttribute("name", "projectName");
+
+  const projectNameInput = document.createElement('input');
+  // Create form input
+  const projectNameAttributes = {
+    'name': 'projectName',
+    'id': 'projectName',
+    'required': ''
+  };
+
+  setAttributes(projectNameInput, projectNameAttributes);
+
+  document.body.appendChild(modal);
+}
+
+
 function openModal(modal) {
   modal.show();
 }
@@ -111,7 +137,7 @@ function closeModal(modal) {
 }
 
 let i = 0;
-function displayTasks(container, task) {
+function createTask(container, task) {
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task");
   taskContainer.dataset.taskNumber = i;
@@ -185,4 +211,12 @@ function editTaskDom(taskToEdit, taskNumber, task) {
   }
 }
 
-export { createForm, openModal, closeModal, displayTasks, editTaskDom }
+// Create a function that displays the tasks
+function displayTasks(tasks, tasksContainer) {
+  tasks.forEach(task => {
+    tasksContainer.appendChild(task);
+  })
+  document.body.appendChild(tasksContainer);
+}
+
+export { createForm, openModal, closeModal, createTask, editTaskDom }

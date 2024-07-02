@@ -1,5 +1,8 @@
 import task from "./index.js";
-import { openModal, closeModal, displayTasks, createForm } from "./dom.js";
+import { openModal, closeModal, createTask, createForm } from "./dom.js";
+
+// create an array of tasks to store created tasks
+let tasks = [];
 
 export default function createTodo() {
   // Dynamically create the form
@@ -26,7 +29,10 @@ export default function createTodo() {
 
     // Create task based on user input
     const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
-    displayTasks(taskContainer, newTask);
+    createTask(taskContainer, newTask);
+
+    // Add the newly create task to an array
+
   
     // Close form
     closeModal(modal);
