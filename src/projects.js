@@ -1,10 +1,14 @@
-import { createAddProjectForm, openModal, closeModal } from "./dom";
+import { createAddProjectForm, openModal, closeModal, displayProjects } from "./dom";
 
 // Create a projects factory
-const projectsFactory = (() => {
+export const projectsFactory = (() => {
   let projects = {
     "0": "",
     };
+
+  let projectNumber;
+
+  let projectCount = 1;
 
   function addTaskToProject(projectNumber, task) {
     projects[projectNumber] = task;
@@ -14,18 +18,35 @@ const projectsFactory = (() => {
     projects[projectNumber] = "";
   }
 
+  function setProjectNumber(project) {
+    project.addEventListener('click', () => {
+      projectNumber = project.getAttribute('data-project-number');
+      console.log(getProjectNumber());
+    })
+  }
+
+  function getProjectNumber() {
+    return projectNumber;
+  }
+
   function getProjects() {
     return projects;
   }
 
-  return { addTaskToProject, addProject, getProjects }; 
+  function getProjectCount() {
+    return projectCount;
+  }
+
+  function projectCounterIncrease() {
+    projectCount++;
+  }
+
+  return { addTaskToProject, addProject, getProjects, getProjectCount, projectCounterIncrease, setProjectNumber, getProjectNumber }; 
 })()
 
-let i = 1;
 // Make a function to add a project
 export default function createProject() {
   createAddProjectForm();
-  const projectContainer = document.querySelector("ul");
   const form = document.querySelector('form');
   const modal = document.querySelector('dialog');
 
@@ -39,17 +60,12 @@ export default function createProject() {
     const projectTitleName = formElements.projectName.value;
 
     // create and append the project to the container;
-    const project = document.createElement("li");
-    project.textContent = projectTitleName;
-    project.setAttribute('data-project-number', i);
-    projectContainer.appendChild(project);
+    displayProjects(projectTitleName);
 
     // Add newly created object to the projects object in the project factory
-    projectsFactory.addProject(String(i));
+    projectsFactory.addProject(String(projectsFactory.getProjectCount()));
 
-    console.log(projectsFactory.getProjects());
-
-    i++;
+    projectsFactory.projectCounterIncrease();
     closeModal(modal);
     form.remove();
     modal.remove();

@@ -1,5 +1,6 @@
 import task from "./index.js";
 import { openModal, closeModal, createTask, createForm } from "./dom.js";
+import { projectsFactory } from "./projects.js";
 
 // create an array of tasks to store created tasks
 let tasks = [];
@@ -31,9 +32,9 @@ export default function createTodo() {
     const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
     createTask(taskContainer, newTask);
 
-    // Add the newly create task to an array
+    // Add the newly create task to its corresponding project
+    
 
-  
     // Close form
     closeModal(modal);
   

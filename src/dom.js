@@ -1,5 +1,6 @@
 import task from './index.js';
 import editTask from './editTodo.js';
+import { projectsFactory } from './projects.js';
 
 
 function setAttributes(element, attributes) {
@@ -136,7 +137,6 @@ function createAddProjectForm() {
   document.body.appendChild(modal);
 }
 
-
 function openModal(modal) {
   modal.show();
 }
@@ -228,4 +228,16 @@ function displayTasks(tasks, tasksContainer) {
   document.body.appendChild(tasksContainer);
 }
 
-export { createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm }
+let bucket = 1
+function displayProjects(projectTitleName) {
+  const projectContainer = document.querySelector("ul");
+  const project = document.createElement("li");
+  project.textContent = projectTitleName;
+  project.setAttribute('data-project-number', bucket);
+  projectContainer.appendChild(project);
+
+  projectsFactory.setProjectNumber(project);
+  bucket++;
+}
+
+export { createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }
