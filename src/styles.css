@@ -1,7 +1,10 @@
-.addTask {
+.addTask,
+.addProject,
+.task,
+li {
   cursor: pointer;
 }
 
-.task {
-  cursor: pointer;
+li {
+  list-style: none;
 }

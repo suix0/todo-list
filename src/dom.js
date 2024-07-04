@@ -1,5 +1,7 @@
 import task from './index.js';
 import editTask from './editTodo.js';
+import { projectsFactory } from './projects.js';
+
 
 function setAttributes(element, attributes) {
   for (const key in attributes) {
@@ -102,6 +104,39 @@ function createForm() {
   document.body.appendChild(modal);
 } 
 
+function createAddProjectForm() {
+  const form = document.createElement("form");
+  const modal = document.createElement("dialog");
+  modal.setAttribute('data-modal', '');
+  form.setAttribute('action', '#');
+  modal.appendChild(form);
+
+  // Create form label for project name
+  const projectName = document.createElement("label");
+  projectName.textContent = "Project Name";
+  projectName.setAttribute("name", "projectName");
+
+  const projectNameInput = document.createElement('input');
+  const projectNameAttributes = {
+    // Create form input
+    'name': 'projectName',
+    'id': 'projectName',
+    'required': ''
+  };
+
+  const submitBtn = document.createElement("button");
+  submitBtn.textContent = "Submit";
+  submitBtn.setAttribute("type", "submit");
+
+  form.appendChild(projectName);
+  form.appendChild(projectNameInput);
+  form.appendChild(submitBtn);
+
+  setAttributes(projectNameInput, projectNameAttributes);
+
+  document.body.appendChild(modal);
+}
+
 function openModal(modal) {
   modal.show();
 }
@@ -111,7 +146,7 @@ function closeModal(modal) {
 }
 
 let i = 0;
-function displayTasks(container, task) {
+function createTask(container, task) {
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task");
   taskContainer.dataset.taskNumber = i;
@@ -185,4 +220,24 @@ function editTaskDom(taskToEdit, taskNumber, task) {
   }
 }
 
-export { createForm, openModal, closeModal, displayTasks, editTaskDom }
+// Create a function that displays the tasks
+function displayTasks(tasks, tasksContainer) {
+  tasks.forEach(task => {
+    tasksContainer.appendChild(task);
+  })
+  document.body.appendChild(tasksContainer);
+}
+
+let bucket = 1
+function displayProjects(projectTitleName) {
+  const projectContainer = document.querySelector("ul");
+  const project = document.createElement("li");
+  project.textContent = projectTitleName;
+  project.setAttribute('data-project-number', bucket);
+  projectContainer.appendChild(project);
+
+  projectsFactory.setProjectNumber(project);
+  bucket++;
+}
+
+export { createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }
