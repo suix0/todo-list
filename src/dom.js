@@ -147,6 +147,7 @@ function closeModal(modal) {
 
 let i = 0;
 function createTask(container, task) {
+  console.log(task);
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task");
   taskContainer.dataset.taskNumber = i;
