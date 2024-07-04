@@ -3,15 +3,23 @@ import { createAddProjectForm, openModal, closeModal, displayProjects } from "./
 // Create a projects factory
 export const projectsFactory = (() => {
   let projects = {
-    "0": "",
+    "0": [],
     };
 
-  let projectNumber;
+  let projectNumber = "0";
 
   let projectCount = 1;
 
   function addTaskToProject(projectNumber, task) {
-    projects[projectNumber] = task;
+    if (projectNumber === "0") {
+      projects[projectNumber].push(task);
+    } else {
+      if (projects[projectNumber] === "") {
+        projects[projectNumber] = [];
+      }
+      projects[projectNumber].push(task);
+    }
+
   }
 
   function addProject(projectNumber) {

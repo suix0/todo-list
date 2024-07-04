@@ -1,6 +1,7 @@
 import './styles.css';
 import createTodo from './createTodo.js';
 import createProject from './projects.js';
+import { projectsFactory } from './projects.js';
 
 export default function task(title, description, dueDate, priority) {
   
@@ -24,4 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const addProjBtn = document.querySelector('.addProject');
   addProjBtn.addEventListener('click', createProject);
+
+  const defaultProj = document.querySelector('[data-project-number="0"]');
+  projectsFactory.setProjectNumber(defaultProj);
 })

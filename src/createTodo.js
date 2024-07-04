@@ -33,7 +33,9 @@ export default function createTodo() {
     createTask(taskContainer, newTask);
 
     // Add the newly create task to its corresponding project
-    
+    projectsFactory.addTaskToProject(projectsFactory.getProjectNumber(), newTask);
+
+    console.log(projectsFactory.getProjects());
 
     // Close form
     closeModal(modal);
