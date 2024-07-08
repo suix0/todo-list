@@ -1,4 +1,4 @@
-import task from './index.js';
+import taskFactory from './index.js';
 import editTask from './editTodo.js';
 import { projectsFactory } from './projects.js';
 
@@ -90,7 +90,7 @@ function createForm() {
     selectPriority.appendChild(priorityOptions);
   }
   form.appendChild(selectPriorityLabel);
-  form.appendChild(selectPriority);
+  form.appendChild(selectPriority); 
 
   // Create submit button
   const submitBtn = document.createElement("button");
@@ -145,28 +145,44 @@ function closeModal(modal) {
   modal.close();
 }
 
-let i = 0;
-function createTask(container, task) {
-  console.log(task);
+const taskCounter = (() => {
+  let count = 0;
+
+  function getCount() {
+    return count;
+  }
+
+  function increaseCount() {
+    count++;
+  }
+
+  function resetCount() {
+    count = 0;
+  }
+
+  return { getCount, increaseCount, resetCount }
+})()
+
+function createTask(container, task, taskNumber) {
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task");
-  taskContainer.dataset.taskNumber = i;
+  taskContainer.dataset.taskNumber = taskNumber;
   
   const taskTitleDom = document.createElement("h3");
-  taskTitleDom.classList.add(`taskTitle${i}`);
+  taskTitleDom.classList.add(`taskTitle${taskNumber}`);
   taskTitleDom.textContent = task.title;
   taskContainer.appendChild(taskTitleDom);
   
   if (task.description !== "") {
     const taskDescriptionDom = document.createElement("p");
-    taskDescriptionDom.classList.add(`taskDescription${i}`);
+    taskDescriptionDom.classList.add(`taskDescription${taskNumber}`);
     taskDescriptionDom.textContent = task.description;
     taskContainer.appendChild(taskDescriptionDom);
   }
   
   if (task.dueDate !== "") {
     const taskDueDateDom = document.createElement("p");
-    taskDueDateDom.classList.add(`taskDueDate${i}`);
+    taskDueDateDom.classList.add(`taskDueDate${taskNumber}`);
     taskDueDateDom.textContent = task.dueDate;
     taskContainer.appendChild(taskDueDateDom);
   }
@@ -185,11 +201,8 @@ function createTask(container, task) {
     taskContainer.remove();
   })
   taskContainer.appendChild(deleteBtn);
-
-  
-  editTask(editBtn, i);
+  editTask(editBtn, taskNumber);
   container.appendChild(taskContainer);
-  i++;
 }
 
 function editTaskDom(taskToEdit, taskNumber, task) {
@@ -221,14 +234,6 @@ function editTaskDom(taskToEdit, taskNumber, task) {
   }
 }
 
-// Create a function that displays the tasks
-function displayTasks(tasks, tasksContainer) {
-  tasks.forEach(task => {
-    tasksContainer.appendChild(task);
-  })
-  document.body.appendChild(tasksContainer);
-}
-
 let bucket = 1
 function displayProjects(projectTitleName) {
   const projectContainer = document.querySelector("ul");
@@ -241,4 +246,4 @@ function displayProjects(projectTitleName) {
   bucket++;
 }
 
-export { createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }
+export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }

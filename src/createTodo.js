@@ -1,9 +1,6 @@
-import task from "./index.js";
-import { openModal, closeModal, createTask, createForm } from "./dom.js";
+import taskFactory from "./index.js";
+import { openModal, closeModal, createTask, createForm, taskCounter } from "./dom.js";
 import { projectsFactory } from "./projects.js";
-
-// create an array of tasks to store created tasks
-let tasks = [];
 
 export default function createTodo() {
   // Dynamically create the form
@@ -29,8 +26,10 @@ export default function createTodo() {
     const taskPriority = parseInt(elements.taskPriority.value);
 
     // Create task based on user input
-    const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
-    createTask(taskContainer, newTask);
+    const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority, taskCounter.getCount());
+
+    createTask(taskContainer, newTask, newTask.getTaskNumber());
+    taskCounter.increaseCount();
 
     // Add the newly create task to its corresponding project
     projectsFactory.addTaskToProject(projectsFactory.getProjectNumber(), newTask);

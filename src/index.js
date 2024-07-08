@@ -3,9 +3,9 @@ import createTodo from './createTodo.js';
 import createProject from './projects.js';
 import { projectsFactory } from './projects.js';
 
-export default function task(title, description, dueDate, priority) {
-  
+export default function task(title, description, dueDate, priority, taskNumber) {
   let newTitle = "";
+  
   if (priority === 3) {
     newTitle += `!!! ${title}` // High
   } else if (priority === 2) {
@@ -13,10 +13,15 @@ export default function task(title, description, dueDate, priority) {
   } else if (priority === 1 ) {
     newTitle += `! ${title}` // Low Priority
   } else {
-    return { title, description, dueDate, priority }
+    return { title, description, dueDate, priority, taskNumber, getTaskNumber }
   }
   title = newTitle;
-  return { title, description, dueDate, priority }
+
+  function getTaskNumber() {
+    return taskNumber
+  }
+
+  return { title, description, dueDate, priority, taskNumber, getTaskNumber }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,24 +1,16 @@
-import { createAddProjectForm, openModal, closeModal, displayProjects, createTask } from "./dom";
+import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, taskCounter } from "./dom";
 
 // Create a projects factory
 export const projectsFactory = (() => {
   let projects = {
     "0": [],
-    };
+  };
 
   let projectNumber = "0";
 
   let projectCount = 1;
 
   function addTaskToProject(projectNumber, task) {
-    // if (projectNumber === "0") {
-    //   projects[projectNumber].push(task);
-    // } else {
-    //   if (projects[projectNumber] === "") {
-    //     projects[projectNumber] = [];
-    //   }
-    //   projects[projectNumber].push(task);
-    // }
     projects[projectNumber].push(task)
   }
 
@@ -36,14 +28,21 @@ export const projectsFactory = (() => {
       // remove the current tasks 
       const tasks = document.querySelectorAll('.task');
       const tasksContainer = document.querySelector('.tasks');
+      
+      console.log(tasks);
 
       [...tasks].forEach(task => {
         task.remove();
       })
 
+      // if (!project.dataset.clicked) {
+      //   taskCounter.resetCount();
+      // }
+      // project.dataset.clicked = true;
+
       projects[projectNumber].forEach(task => {
         console.log(task);
-        createTask(tasksContainer, task);
+        createTask(tasksContainer, task, task.getTaskNumber());
       })
     })
   }
