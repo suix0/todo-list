@@ -29,19 +29,11 @@ export const projectsFactory = (() => {
       const tasks = document.querySelectorAll('.task');
       const tasksContainer = document.querySelector('.tasks');
       
-      console.log(tasks);
-
       [...tasks].forEach(task => {
         task.remove();
       })
 
-      // if (!project.dataset.clicked) {
-      //   taskCounter.resetCount();
-      // }
-      // project.dataset.clicked = true;
-
       projects[projectNumber].forEach(task => {
-        console.log(task);
         createTask(tasksContainer, task, task.getTaskNumber());
       })
     })

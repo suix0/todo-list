@@ -197,8 +197,10 @@ function createTask(container, task, taskNumber) {
   const deleteBtn = document.createElement('button');
   deleteBtn.classList.add("deleteTask");
   deleteBtn.textContent = "Delete";
+  deleteBtn.dataset.deleteBtnNumber = taskNumber;
   deleteBtn.addEventListener('click', () => {
     taskContainer.remove();
+    deleteTaskFromObject(projectsFactory.getProjects(), deleteBtn.dataset.deleteBtnNumber);
   })
   taskContainer.appendChild(deleteBtn);
   editTask(editBtn, taskNumber);
@@ -246,4 +248,16 @@ function displayProjects(projectTitleName) {
   bucket++;
 }
 
+function deleteTaskFromObject(object, deleteBtnNumber) {   
+  // iterate through the object
+  Object.keys(object).forEach(key => {
+    object[key].forEach(task => {
+      // if an object in the array has the task number equal to the delete task number, delete the value
+      if (task.getTaskNumber() === parseInt(deleteBtnNumber)) {
+        const index = object[key].indexOf(task);
+        object[key].splice(index, 1);
+      }
+    })
+  })
+}
 export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }

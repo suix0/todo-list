@@ -1,5 +1,5 @@
 import taskFactory from "./index.js";
-import { openModal, closeModal, createTask, createForm, taskCounter } from "./dom.js";
+import { openModal, closeModal, createTask, createForm, taskCounter, deleteObject } from "./dom.js";
 import { projectsFactory } from "./projects.js";
 
 export default function createTodo() {
@@ -29,13 +29,13 @@ export default function createTodo() {
     const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority, taskCounter.getCount());
 
     createTask(taskContainer, newTask, newTask.getTaskNumber());
+
     taskCounter.increaseCount();
 
     // Add the newly create task to its corresponding project
     projectsFactory.addTaskToProject(projectsFactory.getProjectNumber(), newTask);
 
     console.log(projectsFactory.getProjects());
-
     // Close form
     closeModal(modal);
   
