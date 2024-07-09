@@ -1,5 +1,5 @@
 import { openModal, closeModal, createForm, editTaskDom } from './dom.js';
-import task from './index.js';
+import taskFactory from './index.js';
 
 export default function editTask(taskEditBtn, taskNumber) {
   // add event listener to the taskEditBtn to open the form
@@ -26,7 +26,7 @@ export default function editTask(taskEditBtn, taskNumber) {
         const taskPriority = parseInt(elements.taskPriority.value);
 
         // edit the taskEditBtn's details
-        const newTask = task(taskTitle, taskDescription, taskDueDate, taskPriority);
+        const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority);
 
         // remove the form and modal
         editTaskForm.remove();

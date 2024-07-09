@@ -1,35 +1,41 @@
-import { createAddProjectForm, openModal, closeModal, displayProjects } from "./dom";
+import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, taskCounter } from "./dom";
 
 // Create a projects factory
 export const projectsFactory = (() => {
   let projects = {
     "0": [],
-    };
+  };
 
   let projectNumber = "0";
 
   let projectCount = 1;
 
   function addTaskToProject(projectNumber, task) {
-    if (projectNumber === "0") {
-      projects[projectNumber].push(task);
-    } else {
-      if (projects[projectNumber] === "") {
-        projects[projectNumber] = [];
-      }
-      projects[projectNumber].push(task);
-    }
-
+    projects[projectNumber].push(task)
   }
 
   function addProject(projectNumber) {
-    projects[projectNumber] = "";
+    projects[projectNumber] = [];
   }
 
+  // when a user clicks on a project, update the current project number
+  // and also update the display of tasks matching that specific project's 
+  //tasks
   function setProjectNumber(project) {
     project.addEventListener('click', () => {
       projectNumber = project.getAttribute('data-project-number');
-      console.log(getProjectNumber());
+
+      // remove the current tasks 
+      const tasks = document.querySelectorAll('.task');
+      const tasksContainer = document.querySelector('.tasks');
+      
+      [...tasks].forEach(task => {
+        task.remove();
+      })
+
+      projects[projectNumber].forEach(task => {
+        createTask(tasksContainer, task, task.getTaskNumber());
+      })
     })
   }
 
