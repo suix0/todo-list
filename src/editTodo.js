@@ -1,5 +1,6 @@
-import { openModal, closeModal, createForm, editTaskDom } from './dom.js';
+import { openModal, createForm, editTaskDom, taskCounter } from './dom.js';
 import taskFactory from './index.js';
+import { projectsFactory } from './projects.js';
 
 export default function editTask(taskEditBtn, taskNumber) {
   // add event listener to the taskEditBtn to open the form
@@ -26,13 +27,15 @@ export default function editTask(taskEditBtn, taskNumber) {
         const taskPriority = parseInt(elements.taskPriority.value);
 
         // edit the taskEditBtn's details
-        const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority);
+        const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority, taskNumber);
 
         // remove the form and modal
         editTaskForm.remove();
         modal.remove();
 
         editTaskDom(taskToEdit, taskNumber, newTask);
+
+        taskCounter.increaseCount();
       })
     })
   }

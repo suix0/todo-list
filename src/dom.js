@@ -198,13 +198,16 @@ function createTask(container, task, taskNumber) {
   deleteBtn.classList.add("deleteTask");
   deleteBtn.textContent = "Delete";
   deleteBtn.dataset.deleteBtnNumber = taskNumber;
+
+  // delete corresponding task from dom and object when clicked
   deleteBtn.addEventListener('click', () => {
-    taskContainer.remove();
     deleteTaskFromObject(projectsFactory.getProjects(), deleteBtn.dataset.deleteBtnNumber);
+    taskContainer.remove();
+    console.log(projectsFactory.getProjects());
   })
   taskContainer.appendChild(deleteBtn);
-  editTask(editBtn, taskNumber);
   container.appendChild(taskContainer);
+  editTask(editBtn, taskNumber);
 }
 
 function editTaskDom(taskToEdit, taskNumber, task) {
@@ -234,6 +237,10 @@ function editTaskDom(taskToEdit, taskNumber, task) {
       taskDueDateDom.textContent = task.dueDate;
     }
   }
+
+  console.log(projectsFactory.getProjects())
+
+  editTaskObject(projectsFactory.getProjects(), taskNumber, task)
 }
 
 let bucket = 1
@@ -248,6 +255,19 @@ function displayProjects(projectTitleName) {
   bucket++;
 }
 
+function editTaskObject(object, taskNumber, newTask) {
+  Object.keys(object).forEach(key => {
+    object[key].forEach(task => {
+      if (task.getTaskNumber() === parseInt(taskNumber)) {
+        const index = object[key].indexOf(task);
+        object[key].splice(index, 1);
+        object[key].splice(index, 0, newTask);
+      }
+    })
+  })
+}
+
+// algorithm to delete a specific element from the array values of each object properties
 function deleteTaskFromObject(object, deleteBtnNumber) {   
   // iterate through the object
   Object.keys(object).forEach(key => {
@@ -260,4 +280,6 @@ function deleteTaskFromObject(object, deleteBtnNumber) {
     })
   })
 }
+
+
 export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }
