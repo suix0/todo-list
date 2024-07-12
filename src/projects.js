@@ -21,8 +21,8 @@ export const projectsFactory = (() => {
   // when a user clicks on a project, update the current project number
   // and also update the display of tasks matching that specific project's 
   //tasks
-  function setProjectNumber(project) {
-    project.addEventListener('click', () => {
+  function setProjectNumber(project, projectClickHolder) {
+    projectClickHolder.addEventListener('click', () => {
       projectNumber = project.getAttribute('data-project-number');
 
       // remove the current tasks 

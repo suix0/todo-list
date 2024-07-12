@@ -32,5 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
   addProjBtn.addEventListener('click', createProject);
 
   const defaultProj = document.querySelector('[data-project-number="0"]');
-  projectsFactory.setProjectNumber(defaultProj);
+  const defaultProjSpan = document.querySelector('.defaultSpan');
+  projectsFactory.setProjectNumber(defaultProj, defaultProjSpan);
+
+  const defaultProjDeleteBtn = document.querySelector('[data-delete-btn-number="0"]');
+  
+  defaultProjDeleteBtn.addEventListener('click', () => {
+    console.log(projectsFactory.getProjects());
+    Object.keys(projectsFactory.getProjects()).forEach(projects => {
+      if (projects === defaultProjDeleteBtn.getAttribute('data-delete-btn-number')) {
+        delete projectsFactory.getProjects()[projects];
+        defaultProj.remove();
+        console.log(projectsFactory.getProjects());
+      }
+    })
+  })
 })

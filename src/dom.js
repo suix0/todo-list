@@ -107,6 +107,18 @@ function createForm() {
 function createAddProjectForm() {
   const form = document.createElement("form");
   const modal = document.createElement("dialog");
+  // Add a close button to close modal
+  const closeBtn = document.createElement("a");
+  closeBtn.classList.add("closeModal");
+  modal.setAttribute('data-modal', "");
+  closeBtn.textContent = "Close";
+  closeBtn.addEventListener('click', () => {
+    closeModal(modal);
+    modal.remove();
+    form.remove();
+  });
+  form.appendChild(closeBtn);
+
   modal.setAttribute('data-modal', '');
   form.setAttribute('action', '#');
   modal.appendChild(form);
@@ -131,7 +143,7 @@ function createAddProjectForm() {
   form.appendChild(projectName);
   form.appendChild(projectNameInput);
   form.appendChild(submitBtn);
-
+  
   setAttributes(projectNameInput, projectNameAttributes);
 
   document.body.appendChild(modal);
@@ -247,11 +259,31 @@ let bucket = 1
 function displayProjects(projectTitleName) {
   const projectContainer = document.querySelector("ul");
   const project = document.createElement("li");
-  project.textContent = projectTitleName;
+
+  const projectTitleHolder = document.createElement("span");
+  
+  projectTitleHolder.textContent = projectTitleName;
   project.setAttribute('data-project-number', bucket);
+  project.appendChild(projectTitleHolder);
   projectContainer.appendChild(project);
 
-  projectsFactory.setProjectNumber(project);
+  const deleteBtn = document.createElement('button');
+  deleteBtn.classList.add("deleteProject");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.dataset.deleteBtnNumber = bucket;
+  project.appendChild(deleteBtn);
+
+  // delete corresponding task from dom and object when clicked
+  // deleteBtn.addEventListener('click', () => {
+  //   // Object.keys(projectsFactory.getProjects()).forEach(project => {
+  //   //   console.log(typeof project);
+  //   // })
+  //   // // project.remove();
+  //   console.log(projectsFactory.getProjects());
+  // })
+
+
+  projectsFactory.setProjectNumber(project, projectTitleHolder);
   bucket++;
 }
 

@@ -1,7 +1,7 @@
 .addTask,
 .addProject,
 .task,
-li {
+span {
   cursor: pointer;
 }
 
