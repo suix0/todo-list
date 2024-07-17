@@ -10,8 +10,10 @@ export default function createTodo() {
   const modal = document.querySelector("dialog");
   const taskContainer = document.querySelector('.tasks');
 
+
   // Open the form's modal
   openModal(modal);
+
 
   // Add Event Listener to form upon submit
   addTaskForm.addEventListener('submit', (event) => {
