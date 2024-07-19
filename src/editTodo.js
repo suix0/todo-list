@@ -1,5 +1,6 @@
-import { openModal, closeModal, createForm, editTaskDom } from './dom.js';
+import { openModal, createForm, editTaskDom, taskCounter } from './dom.js';
 import taskFactory from './index.js';
+import { projectsFactory } from './projects.js';
 
 export default function editTask(taskEditBtn, taskNumber) {
   // add event listener to the taskEditBtn to open the form
@@ -11,6 +12,8 @@ export default function editTask(taskEditBtn, taskNumber) {
       const editTaskForm = document.querySelector('form');
       const modal = document.querySelector('dialog');
       const taskToEdit = document.querySelector(`[data-task-number="${String(taskNumber)}"]`);
+      const taskToEditDiv = document.querySelector(`.taskDetails${taskNumber}`);
+      console.log(taskToEditDiv);
       openModal(modal);
 
       // add event listener to form upon submit
@@ -26,13 +29,15 @@ export default function editTask(taskEditBtn, taskNumber) {
         const taskPriority = parseInt(elements.taskPriority.value);
 
         // edit the taskEditBtn's details
-        const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority);
+        const newTask = taskFactory(taskTitle, taskDescription, taskDueDate, taskPriority, taskNumber);
 
         // remove the form and modal
         editTaskForm.remove();
         modal.remove();
 
-        editTaskDom(taskToEdit, taskNumber, newTask);
+        editTaskDom(taskToEdit, taskToEditDiv, taskNumber, newTask);
+
+        taskCounter.increaseCount();
       })
     })
   }

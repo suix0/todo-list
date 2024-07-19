@@ -25,6 +25,7 @@ export default function task(title, description, dueDate, priority, taskNumber) 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log(localStorage)
   const addTaskBtn = document.querySelector(".addTask");
   addTaskBtn.addEventListener("click", createTodo);  
 
@@ -32,5 +33,32 @@ document.addEventListener('DOMContentLoaded', () => {
   addProjBtn.addEventListener('click', createProject);
 
   const defaultProj = document.querySelector('[data-project-number="0"]');
-  projectsFactory.setProjectNumber(defaultProj);
+  const defaultProjSpan = document.querySelector('.defaultSpan');
+  projectsFactory.setProjectNumber(defaultProj, defaultProjSpan);
+
+  const defaultProjDeleteBtn = document.querySelector('[data-delete-btn-number="0"]');
+  
+  defaultProjDeleteBtn.addEventListener('click', () => {
+    console.log(projectsFactory.getProjects());
+
+
+    Object.keys(projectsFactory.getProjects()).forEach(projects => {
+      if (projects === defaultProjDeleteBtn.getAttribute('data-delete-btn-number')) {
+        delete projectsFactory.getProjects()[projects];
+
+        // delete tasks in dom if tasks in display is from project to be deleted
+        if (parseInt(projectsFactory.getProjectNumber()) === parseInt(defaultProjDeleteBtn.getAttribute('data-delete-btn-number'))) {
+          const tasks = document.querySelectorAll('.task');
+          const addTaskBtn = document.querySelector('.addTask');
+          [...tasks].forEach(task => {
+            task.remove();
+          })
+          addTaskBtn.remove();
+        }
+        defaultProj.remove();
+        console.log(projectsFactory.getProjects());
+      }
+    })
+
+  })
 })

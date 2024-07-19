@@ -1,4 +1,5 @@
 import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, taskCounter } from "./dom";
+import createTodo from "./createTodo";
 
 // Create a projects factory
 export const projectsFactory = (() => {
@@ -11,7 +12,9 @@ export const projectsFactory = (() => {
   let projectCount = 1;
 
   function addTaskToProject(projectNumber, task) {
-    projects[projectNumber].push(task)
+    if (projectNumber) {
+      projects[projectNumber].push(task)
+    }
   }
 
   function addProject(projectNumber) {
@@ -21,14 +24,15 @@ export const projectsFactory = (() => {
   // when a user clicks on a project, update the current project number
   // and also update the display of tasks matching that specific project's 
   //tasks
-  function setProjectNumber(project) {
-    project.addEventListener('click', () => {
+  function setProjectNumber(project, projectClickHolder) {
+    projectClickHolder.addEventListener('click', () => {
       projectNumber = project.getAttribute('data-project-number');
-
+      console.log(projectNumber);
       // remove the current tasks 
       const tasks = document.querySelectorAll('.task');
       const tasksContainer = document.querySelector('.tasks');
-      
+      const addTaskBtn = document.querySelector('.addTask');
+
       [...tasks].forEach(task => {
         task.remove();
       })
@@ -36,6 +40,14 @@ export const projectsFactory = (() => {
       projects[projectNumber].forEach(task => {
         createTask(tasksContainer, task, task.getTaskNumber());
       })
+
+      if (addTaskBtn === null) {
+        const addTaskBtnNew = document.createElement('a');
+        addTaskBtnNew.addEventListener("click", createTodo);  
+        addTaskBtnNew.textContent = "Add Task";
+        addTaskBtnNew.classList.add('addTask');
+        tasksContainer.appendChild(addTaskBtnNew);
+      }
     })
   }
 
