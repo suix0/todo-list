@@ -1,5 +1,6 @@
 import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, taskCounter } from "./dom";
 import createTodo from "./createTodo";
+import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage } from "./storage";
 
 // Create a projects factory
 export const projectsFactory = (() => {
@@ -7,18 +8,22 @@ export const projectsFactory = (() => {
     "0": [],
   };
 
+  storeToLocalStorage("projects", projects);
+
   let projectNumber = "0";
 
   let projectCount = 1;
 
   function addTaskToProject(projectNumber, task) {
     if (projectNumber) {
-      projects[projectNumber].push(task)
+      projects[projectNumber].push(task);
+      addNewTaskLocalStorage(projectNumber, task);
     }
   }
 
   function addProject(projectNumber) {
     projects[projectNumber] = [];
+    addNewProjectLocalStorage(projectNumber, localStorage.getItem("projects"));
   }
 
   // when a user clicks on a project, update the current project number
