@@ -25,6 +25,7 @@ export default function task(title, description, dueDate, priority, taskNumber) 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log(localStorage)
   const addTaskBtn = document.querySelector(".addTask");
   addTaskBtn.addEventListener("click", createTodo);  
 
