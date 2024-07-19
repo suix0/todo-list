@@ -1,6 +1,7 @@
 import taskFactory from './index.js';
 import editTask from './editTodo.js';
 import { projectsFactory } from './projects.js';
+import { deleteProjectProperty } from './storage.js';
 
 
 function setAttributes(element, attributes) {
@@ -365,6 +366,7 @@ function displayProjects(projectTitleName) {
     Object.keys(projectsFactory.getProjects()).forEach(projects => {
       if (projects === deleteBtn.getAttribute('data-delete-btn-number')) {
         delete projectsFactory.getProjects()[projects];
+        deleteProjectProperty(deleteBtn.getAttribute('data-delete-btn-number'))
         // delete tasks in dom if tasks in display is from project to be deleted
         if (parseInt(projectsFactory.getProjectNumber()) === parseInt(deleteBtn.getAttribute('data-delete-btn-number'))) {
           const tasks = document.querySelectorAll('.task');

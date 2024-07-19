@@ -30,4 +30,22 @@ function addNewTaskLocalStorage(projectNumber, task) {
 }
 
 
-export { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage };
+function deleteProjectProperty(projectNumber) {
+  let obj = localStorage.getItem("projects");
+
+  let deserialized = JSON.parse(obj);
+
+  Object.keys(deserialized).forEach(projects => {
+    if (projects === projectNumber) {
+      delete deserialized[projectNumber];
+    }
+  })
+
+  let serialized = JSON.stringify(deserialized);
+
+  localStorage.removeItem(obj);
+
+  localStorage.setItem("projects", serialized);
+}
+
+export { deleteProjectProperty, storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage };
