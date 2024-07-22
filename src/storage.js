@@ -70,6 +70,7 @@ function deleteTaskLocalStorage(taskNumber) {
   let obj = localStorage.getItem("projects");
   let deserialized = JSON.parse(obj);
 
+  
   Object.keys(deserialized).forEach(key => {
     deserialized[key].forEach(task => {
       // if an object in the array has the task number equal to the delete task number, delete the value
@@ -79,11 +80,25 @@ function deleteTaskLocalStorage(taskNumber) {
       }
     })
   })
+  
+  const tasksObj = localStorage.getItem("tasksDom");
+  let tasksObjDeserialized = JSON.parse(tasksObj);
+
+  tasksObjDeserialized["taskInDisplay"].forEach(task => {
+    if (task.taskNumber === parseInt(taskNumber)) {
+      const index = tasksObjDeserialized["taskInDisplay"].indexOf(task);
+      tasksObjDeserialized["taskInDisplay"].splice(index, 1);
+    }
+  })
 
   localStorage.removeItem(obj);
-
+  localStorage.removeItem(tasksObj);
+  
   let serialized = JSON.stringify(deserialized);
+  let taskSerialized = JSON.stringify(tasksObjDeserialized);
+
   localStorage.setItem("projects", serialized);
+  localStorage.setItem("tasksDom", taskSerialized);
 } 
 
 function deleteProjectProperty(projectNumber) {
@@ -104,12 +119,23 @@ function deleteProjectProperty(projectNumber) {
   localStorage.setItem("projects", serialized);
 }
 
-function renderStoredTaskContent(tasks) {
+function renderStoredTaskContent() {
+  const tasks = localStorage.getItem("tasksDom");
+  const tasksParsed = JSON.parse(tasks);
   const taskContainer = document.querySelector('.tasks');
-  tasks["tasksInDisplay"].forEach(task => {
+  
+  tasksParsed["tasksInDisplay"].forEach(task => {
     createTask(taskContainer, task, task.getTaskNumber());
   })
 }
+
+// function renderStoredProjectsContent() {
+//   const projects = localStorage.getItem("projects");
+//   const projectsParsed = JSON.parse(projects);
+
+//   const projectsContainer = document.getElementsByClassName("ul");
+
+// }
 
 function resetTasksDomContent() {
   let tasksDom = localStorage.getItem("tasksDom");

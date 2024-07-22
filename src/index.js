@@ -1,9 +1,7 @@
 import './styles.css';
 import createTodo from './createTodo.js';
-import createProject from './projects.js';
-import { projectsFactory } from './projects.js';
-import { deleteProjectProperty } from './storage.js';
-import { tasksDom } from './dom.js';
+import { createProject, projectsFactory }from './projects.js';
+import { deleteProjectProperty, renderStoredTaskContent } from './storage.js';
 
 export default function task(title, description, dueDate, priority, taskNumber) {
   let newTitle = "";
@@ -27,9 +25,10 @@ export default function task(title, description, dueDate, priority, taskNumber) 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // if (tasksDom.getTasksDomArr()["taskInDisplay"].length !== 0) {
-    
-  // }
+  // load the tasks in display
+  if (Object.keys(JSON.parse(localStorage.getItem("tasksDom"))).length > 1) {
+    renderStoredTaskContent();
+  }
 
   const addTaskBtn = document.querySelector(".addTask");
   addTaskBtn.addEventListener("click", createTodo);  
