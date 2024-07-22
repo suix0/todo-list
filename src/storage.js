@@ -1,3 +1,5 @@
+import { createTask, taskCounter } from "./dom";
+
 // function to save  to local storage after new project is made
 function storeToLocalStorage(propertyName, object) {
   const serialized = JSON.stringify(object);
@@ -29,6 +31,60 @@ function addNewTaskLocalStorage(projectNumber, task) {
   console.log(localStorage.getItem("projects"));
 }
 
+function editNewTaskLocalStorage(taskNumber, newTask) {
+  let obj = localStorage.getItem("projects");
+  let tasksObj = localStorage.getItem("tasksDom");
+  
+  let deserialized = JSON.parse(obj);
+
+  Object.keys(deserialized).forEach(key => {
+    deserialized[key].forEach(task => {
+      if (task.taskNumber === parseInt(taskNumber)) {
+        const index = deserialized[key].indexOf(task);
+        deserialized[key].splice(index, 1);
+        deserialized[key].splice(index, 0, newTask);
+      }
+    })
+  })
+
+  let tasksObjDeserialized = JSON.parse(tasksObj);
+  tasksObjDeserialized["taskInDisplay"].forEach(task => {
+    if (task.taskNumber === parseInt(taskNumber)) {
+      const index = tasksObjDeserialized["taskInDisplay"].indexOf(task);
+      tasksObjDeserialized["taskInDisplay"].splice(index, 1);
+      tasksObjDeserialized["taskInDisplay"].splice(index, 0, newTask);
+    }
+  })
+
+  localStorage.removeItem(obj);
+  localStorage.removeItem(tasksObj);
+  
+  let serialized = JSON.stringify(deserialized);
+  let taskSerialized = JSON.stringify(tasksObjDeserialized);
+
+  localStorage.setItem("projects", serialized);
+  localStorage.setItem("tasksDom", taskSerialized);
+}
+
+function deleteTaskLocalStorage(taskNumber) {
+  let obj = localStorage.getItem("projects");
+  let deserialized = JSON.parse(obj);
+
+  Object.keys(deserialized).forEach(key => {
+    deserialized[key].forEach(task => {
+      // if an object in the array has the task number equal to the delete task number, delete the value
+      if (task.taskNumber === parseInt(taskNumber)) {
+        const index = deserialized[key].indexOf(task);
+        deserialized[key].splice(index, 1);
+      }
+    })
+  })
+
+  localStorage.removeItem(obj);
+
+  let serialized = JSON.stringify(deserialized);
+  localStorage.setItem("projects", serialized);
+} 
 
 function deleteProjectProperty(projectNumber) {
   let obj = localStorage.getItem("projects");
@@ -48,4 +104,23 @@ function deleteProjectProperty(projectNumber) {
   localStorage.setItem("projects", serialized);
 }
 
-export { deleteProjectProperty, storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage };
+function renderStoredTaskContent(tasks) {
+  const taskContainer = document.querySelector('.tasks');
+  tasks["tasksInDisplay"].forEach(task => {
+    createTask(taskContainer, task, task.getTaskNumber());
+  })
+}
+
+function resetTasksDomContent() {
+  let tasksDom = localStorage.getItem("tasksDom");
+  localStorage.removeItem(tasksDom);
+
+  let tasks = {
+    "taskInDisplay": [],
+  }
+
+  let tasksSerialized = JSON.stringify(tasks);
+  localStorage.setItem("tasksDom", tasksSerialized);
+}
+
+export { resetTasksDomContent, editNewTaskLocalStorage, deleteTaskLocalStorage, deleteProjectProperty, storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage, renderStoredTaskContent };

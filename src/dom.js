@@ -1,7 +1,7 @@
 import taskFactory from './index.js';
 import editTask from './editTodo.js';
 import { projectsFactory } from './projects.js';
-import { deleteProjectProperty } from './storage.js';
+import { deleteProjectProperty, editNewTaskLocalStorage, deleteTaskLocalStorage, storeTasksDomContent, storeToLocalStorage } from './storage.js';
 
 
 function setAttributes(element, attributes) {
@@ -201,6 +201,34 @@ const taskCounter = (() => {
   return { getCount, increaseCount, resetCount }
 })()
 
+const tasksDom = (() => {
+  let tasks = {
+    "taskInDisplay": [],
+  };
+
+  storeToLocalStorage("tasksDom", tasks);
+
+  function pushToTaskDom(task) {
+    tasks["taskInDisplay"].push(task);
+    getTasksDomArr()
+    localStorage.removeItem("tasksDom");
+
+    storeToLocalStorage("tasksDom", tasks);
+  }
+
+  function resetTasks() {
+    tasks = {
+      "taskInDisplay": [],
+    };
+  }
+
+  function getTasksDomArr() {
+    return tasks;
+  }
+
+  return { pushToTaskDom, resetTasks, getTasksDomArr }
+})()
+
 function createTask(container, task, taskNumber) {
   const taskContainer = document.createElement("div");
   const taskDetails = document.createElement("div");
@@ -286,7 +314,8 @@ function createTask(container, task, taskNumber) {
   })
   taskContainer.appendChild(deleteBtn);
   container.appendChild(taskContainer);
-  editTask(editBtn, taskNumber);
+  editTask(editBtn, taskNumber); 
+  tasksDom.pushToTaskDom(task);
 }
 
 function editTaskDom(taskToEdit, taskToEditDiv, taskNumber, task) {
@@ -397,6 +426,7 @@ function editTaskObject(object, taskNumber, newTask) {
       }
     })
   })
+  editNewTaskLocalStorage(taskNumber, newTask);
 }
 
 // algorithm to delete a specific element from the array values of each object properties
@@ -411,7 +441,7 @@ function deleteTaskFromObject(object, deleteBtnNumber) {
       }
     })
   })
+  deleteTaskLocalStorage(deleteBtnNumber);
 }
 
-
-export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects }
+export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects, tasksDom }

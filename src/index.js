@@ -2,6 +2,8 @@ import './styles.css';
 import createTodo from './createTodo.js';
 import createProject from './projects.js';
 import { projectsFactory } from './projects.js';
+import { deleteProjectProperty } from './storage.js';
+import { tasksDom } from './dom.js';
 
 export default function task(title, description, dueDate, priority, taskNumber) {
   let newTitle = "";
@@ -25,7 +27,10 @@ export default function task(title, description, dueDate, priority, taskNumber) 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log(localStorage)
+  // if (tasksDom.getTasksDomArr()["taskInDisplay"].length !== 0) {
+    
+  // }
+
   const addTaskBtn = document.querySelector(".addTask");
   addTaskBtn.addEventListener("click", createTodo);  
 
@@ -45,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(projectsFactory.getProjects()).forEach(projects => {
       if (projects === defaultProjDeleteBtn.getAttribute('data-delete-btn-number')) {
         delete projectsFactory.getProjects()[projects];
-
+        deleteProjectProperty(defaultProjDeleteBtn.getAttribute('data-delete-btn-number'));
         // delete tasks in dom if tasks in display is from project to be deleted
         if (parseInt(projectsFactory.getProjectNumber()) === parseInt(defaultProjDeleteBtn.getAttribute('data-delete-btn-number'))) {
           const tasks = document.querySelectorAll('.task');

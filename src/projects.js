@@ -1,6 +1,6 @@
-import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, taskCounter } from "./dom";
+import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, tasksDom, taskCounter } from "./dom";
 import createTodo from "./createTodo";
-import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage } from "./storage";
+import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage, resetTasksDomContent } from "./storage";
 
 // Create a projects factory
 export const projectsFactory = (() => {
@@ -33,18 +33,25 @@ export const projectsFactory = (() => {
     projectClickHolder.addEventListener('click', () => {
       projectNumber = project.getAttribute('data-project-number');
       console.log(projectNumber);
+      
       // remove the current tasks 
       const tasks = document.querySelectorAll('.task');
       const tasksContainer = document.querySelector('.tasks');
       const addTaskBtn = document.querySelector('.addTask');
 
+      resetTasksDomContent();
+      tasksDom.resetTasks();
       [...tasks].forEach(task => {
         task.remove();
       })
+      
+      tasksDom.resetTasks();
 
       projects[projectNumber].forEach(task => {
         createTask(tasksContainer, task, task.getTaskNumber());
       })
+
+      console.log(tasksDom.getTasksDomArr());
 
       if (addTaskBtn === null) {
         const addTaskBtnNew = document.createElement('a');
