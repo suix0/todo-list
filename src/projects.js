@@ -1,4 +1,4 @@
-import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, tasksDom, taskCounter } from "./dom";
+import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, tasksDom, projectsDom, taskCounter } from "./dom";
 import createTodo from "./createTodo";
 import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage, resetTasksDomContent } from "./storage";
 
@@ -12,17 +12,17 @@ export const projectsFactory = (() => {
 
   let projectCount = 1;
 
-  function addTaskToProject(projectNumber, task) {
-    if (projectNumber) {
-      projects[projectNumber].push(task);
-      addNewTaskLocalStorage(projectNumber, task);
+  function addTaskToProject(projectNum, task) {
+    if (projectNum) {
+      projects[projectNum].push(task);
+      addNewTaskLocalStorage(projectNum, task);
     }
   }
 
-  function addProject(projectNumber) {
-    projects[projectNumber] = [];
+  function addProject(projectNum) {
+    projects[projectNum] = [];
     storeToLocalStorage("projects", projects);
-    addNewProjectLocalStorage(projectNumber, localStorage.getItem("projects"));
+    addNewProjectLocalStorage(projectNum, localStorage.getItem("projects"));
   }
 
   // when a user clicks on a project, update the current project number
@@ -31,8 +31,7 @@ export const projectsFactory = (() => {
   function setProjectNumber(project, projectClickHolder) {
     projectClickHolder.addEventListener('click', () => {
       projectNumber = project.getAttribute('data-project-number');
-      console.log(projectNumber);
-      
+
       // remove the current tasks 
       const tasks = document.querySelectorAll('.task');
       const tasksContainer = document.querySelector('.tasks');
@@ -44,8 +43,10 @@ export const projectsFactory = (() => {
           resetTasksDomContent();
           project.dataset.clicked = false;
         }
+      } else {
+        resetTasksDomContent();
       }
-      
+
       tasksDom.resetTasks();
       [...tasks].forEach(task => {
         task.remove();
@@ -84,6 +85,7 @@ export const projectsFactory = (() => {
   function projectCounterIncrease() {
     projectCount++;
   }
+
 
   return { addTaskToProject, addProject, getProjects, getProjectCount, projectCounterIncrease, setProjectNumber, getProjectNumber }; 
 })()

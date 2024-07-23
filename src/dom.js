@@ -1,7 +1,7 @@
 import taskFactory from './index.js';
 import editTask from './editTodo.js';
 import { projectsFactory } from './projects.js';
-import { deleteProjectProperty, editNewTaskLocalStorage, deleteTaskLocalStorage, storeTasksDomContent, storeToLocalStorage } from './storage.js';
+import { deleteProjectProperty, editNewTaskLocalStorage, deleteTaskLocalStorage, storeTasksDomContent, storeToLocalStorage, resetTasksDomContent } from './storage.js';
 
 
 function setAttributes(element, attributes) {
@@ -376,8 +376,40 @@ function editTaskDom(taskToEdit, taskToEditDiv, taskNumber, task) {
   editTaskObject(projectsFactory.getProjects(), taskNumber, task)
 }
 
+const projectsDom = (() => {
+  let projects = { 
+    "My Day": "0",
+  };
+
+  function pushToProjectDom(projectName, projectNumber) {
+    projects[projectName] = String(projectNumber);
+    getProjectDomArr();
+    storeToLocalStorage("projectsDom", projects);
+  }
+
+  function resetProjects() {
+    projects = {}
+  }
+
+  function getProjectDomArr() {
+    return projects;
+  }
+
+  function deleteProject(projectNum) { 
+    Object.keys(projects).forEach(project => {
+      if (projects[project] === projectNum) {
+        delete projects[project];
+      }
+    })
+    storeToLocalStorage("projectsDom", projects);
+  }
+
+  return { pushToProjectDom, resetProjects, deleteProject, getProjectDomArr }
+})()
+
 let bucket = 1
 function displayProjects(projectTitleName) {
+  projectsDom.pushToProjectDom(projectTitleName)
   const projectContainer = document.querySelector("ul");
   const project = document.createElement("li");
 
@@ -416,6 +448,7 @@ function displayProjects(projectTitleName) {
         if (parseInt(projectsFactory.getProjectNumber()) === parseInt(deleteBtn.getAttribute('data-delete-btn-number'))) {
           const tasks = document.querySelectorAll('.task');
           const addTaskBtn = document.querySelector('.addTask');
+          resetTasksDomContent();
           [...tasks].forEach(task => {
             task.remove();
           })
@@ -429,6 +462,7 @@ function displayProjects(projectTitleName) {
   })
 
   projectsFactory.setProjectNumber(project, projectTitleHolder);
+  projectsDom.pushToProjectDom(projectTitleName, bucket);
   bucket++;
 }
 
@@ -460,4 +494,4 @@ function deleteTaskFromObject(object, deleteBtnNumber) {
   deleteTaskLocalStorage(deleteBtnNumber);
 }
 
-export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects, tasksDom }
+export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects, tasksDom, projectsDom }

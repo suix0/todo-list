@@ -1,4 +1,5 @@
-import { createTask, tasksDom, taskCounter } from "./dom";
+import { createTask, tasksDom, projectsDom, taskCounter } from "./dom";
+import { projectsFactory } from "./projects";
 
 // function to save  to local storage after new project is made
 function storeToLocalStorage(propertyName, object) {
@@ -118,6 +119,9 @@ function deleteProjectProperty(projectNumber) {
   let obj = localStorage.getItem("projects");
 
   let deserialized = JSON.parse(obj);
+
+  console.log(projectsFactory.getProjectNumber());
+  projectsDom.deleteProject(projectNumber);
 
   Object.keys(deserialized).forEach(projects => {
     if (projects === projectNumber) {

@@ -1,7 +1,7 @@
 import './styles.css';
 import createTodo from './createTodo.js';
 import { createProject, projectsFactory } from './projects.js';
-import { deleteProjectProperty, renderStoredTaskContent } from './storage.js';
+import { deleteProjectProperty, renderStoredTaskContent, resetTasksDomContent } from './storage.js';
 
 export default function task(title, description, dueDate, priority, taskNumber) {
   let newTitle = "";
@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (parseInt(projectsFactory.getProjectNumber()) === parseInt(defaultProjDeleteBtn.getAttribute('data-delete-btn-number'))) {
           const tasks = document.querySelectorAll('.task');
           const addTaskBtn = document.querySelector('.addTask');
+          resetTasksDomContent();
           [...tasks].forEach(task => {
             task.remove();
           })
