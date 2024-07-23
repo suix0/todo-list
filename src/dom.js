@@ -206,14 +206,11 @@ const tasksDom = (() => {
     "taskInDisplay": [],
   };
 
-  storeToLocalStorage("tasksDom", tasks);
-
   function pushToTaskDom(task) {
     tasks["taskInDisplay"].push(task);
     getTasksDomArr()
-    localStorage.removeItem("tasksDom");
-
     storeToLocalStorage("tasksDom", tasks);
+    console.log(tasks);
   }
 
   function resetTasks() {
@@ -226,7 +223,26 @@ const tasksDom = (() => {
     return tasks;
   }
 
-  return { pushToTaskDom, resetTasks, getTasksDomArr }
+  function editTask(taskNumber, newTask) {
+    tasks["taskInDisplay"].forEach(task => {
+      if (task.taskNumber === parseInt(taskNumber)) {
+        const index = tasks["taskInDisplay"].indexOf(task);
+        tasks["taskInDisplay"].splice(index, 1);
+        tasks["taskInDisplay"].splice(index, 0, newTask);
+      }
+    })
+  }
+
+  function deleteTask(taskNumber) { 
+    tasks["taskInDisplay"].forEach(task => {
+      if (task.taskNumber === parseInt(taskNumber)) {
+        const index = tasks["taskInDisplay"].indexOf(task);
+        tasks["taskInDisplay"].splice(index, 1);
+      }
+    })
+  }
+
+  return { pushToTaskDom, resetTasks, getTasksDomArr, deleteTask, editTask }
 })()
 
 function createTask(container, task, taskNumber) {

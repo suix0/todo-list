@@ -1,4 +1,4 @@
-import { createTask, taskCounter } from "./dom";
+import { createTask, tasksDom, taskCounter } from "./dom";
 
 // function to save  to local storage after new project is made
 function storeToLocalStorage(propertyName, object) {
@@ -20,13 +20,23 @@ function addNewTaskLocalStorage(projectNumber, task) {
   // get the projects obj in local storage
   const obj = localStorage.getItem("projects");
 
+  if (obj === null) {
+    let projects = {
+      "0": []
+    }
+    let projectsStringified = JSON.stringify(projects);
+    localStorage.setItem("projects", projectsStringified);
+  }
+
+  const newObj = localStorage.getItem("projects");
+  const newObjParsed = JSON.parse(newObj);
+
   // convert to object in js and add task
-  let deserialized = JSON.parse(obj);
-  deserialized[projectNumber].push(task); 
+  newObjParsed[projectNumber].push(task); 
 
   // convert back to string and put it back in local storage
-  const serialized = JSON.stringify(deserialized);
-  localStorage.removeItem(obj);
+  const serialized = JSON.stringify(newObjParsed);
+  localStorage.removeItem(newObj);
   localStorage.setItem("projects", serialized);
   console.log(localStorage.getItem("projects"));
 }
@@ -36,6 +46,8 @@ function editNewTaskLocalStorage(taskNumber, newTask) {
   let tasksObj = localStorage.getItem("tasksDom");
   
   let deserialized = JSON.parse(obj);
+
+  tasksDom.editTask(taskNumber, newTask);
 
   Object.keys(deserialized).forEach(key => {
     deserialized[key].forEach(task => {
@@ -70,6 +82,7 @@ function deleteTaskLocalStorage(taskNumber) {
   let obj = localStorage.getItem("projects");
   let deserialized = JSON.parse(obj);
 
+  tasksDom.deleteTask(taskNumber);
   
   Object.keys(deserialized).forEach(key => {
     deserialized[key].forEach(task => {
@@ -124,8 +137,8 @@ function renderStoredTaskContent() {
   const tasksParsed = JSON.parse(tasks);
   const taskContainer = document.querySelector('.tasks');
   
-  tasksParsed["tasksInDisplay"].forEach(task => {
-    createTask(taskContainer, task, task.getTaskNumber());
+  tasksParsed["taskInDisplay"].forEach(task => {
+    createTask(taskContainer, task, task.taskNumber);
   })
 }
 

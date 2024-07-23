@@ -8,8 +8,6 @@ export const projectsFactory = (() => {
     "0": [],
   };
 
-  storeToLocalStorage("projects", projects);
-
   let projectNumber = "0";
 
   let projectCount = 1;
@@ -23,6 +21,7 @@ export const projectsFactory = (() => {
 
   function addProject(projectNumber) {
     projects[projectNumber] = [];
+    storeToLocalStorage("projects", projects);
     addNewProjectLocalStorage(projectNumber, localStorage.getItem("projects"));
   }
 
@@ -39,7 +38,14 @@ export const projectsFactory = (() => {
       const tasksContainer = document.querySelector('.tasks');
       const addTaskBtn = document.querySelector('.addTask');
 
-      resetTasksDomContent();
+      if (projectNumber === "0") {
+        project.dataset.clicked = true;
+        if (project.dataset.clicked === true) {
+          resetTasksDomContent();
+          project.dataset.clicked = false;
+        }
+      }
+      
       tasksDom.resetTasks();
       [...tasks].forEach(task => {
         task.remove();
@@ -83,7 +89,7 @@ export const projectsFactory = (() => {
 })()
 
 // Make a function to add a project
-export default function createProject() {
+export function createProject() {
   createAddProjectForm();
   const form = document.querySelector('form');
   const modal = document.querySelector('dialog');

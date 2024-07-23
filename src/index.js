@@ -1,6 +1,6 @@
 import './styles.css';
 import createTodo from './createTodo.js';
-import { createProject, projectsFactory }from './projects.js';
+import { createProject, projectsFactory } from './projects.js';
 import { deleteProjectProperty, renderStoredTaskContent } from './storage.js';
 
 export default function task(title, description, dueDate, priority, taskNumber) {
@@ -8,7 +8,7 @@ export default function task(title, description, dueDate, priority, taskNumber) 
   
   if (priority === 3) {
     newTitle += `!!! ${title}` // High
-  } else if (priority === 2) {
+  } else if (priority === 2) {  
     newTitle += `!! ${title}` // Medium Priority
   } else if (priority === 1 ) {
     newTitle += `! ${title}` // Low Priority
@@ -26,7 +26,7 @@ export default function task(title, description, dueDate, priority, taskNumber) 
 
 document.addEventListener('DOMContentLoaded', () => {
   // load the tasks in display
-  if (Object.keys(JSON.parse(localStorage.getItem("tasksDom"))).length > 1) {
+  if (localStorage.getItem("tasksDom")) {
     renderStoredTaskContent();
   }
 
@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   defaultProjDeleteBtn.addEventListener('click', () => {
     console.log(projectsFactory.getProjects());
-
 
     Object.keys(projectsFactory.getProjects()).forEach(projects => {
       if (projects === defaultProjDeleteBtn.getAttribute('data-delete-btn-number')) {
