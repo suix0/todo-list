@@ -1,4 +1,4 @@
-import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, tasksDom, projectsDom, taskCounter } from "./dom";
+import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, tasksDom, projectsDom, taskCounter, addTaskButton } from "./dom";
 import createTodo from "./createTodo";
 import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage, resetTasksDomContent, defaultCounter } from "./storage";
 
@@ -49,7 +49,7 @@ export const projectsFactory = (() => {
       localStorage.setItem("projects", JSON.stringify(projects));
       // remove the current tasks 
       const tasks = document.querySelectorAll('.task');
-      const tasksContainer = document.querySelector('.tasksContainer');
+      const tasksContainer = document.querySelector('.tasks');
       const addTaskBtn = document.querySelector('.addTask');
       
       
@@ -66,11 +66,7 @@ export const projectsFactory = (() => {
       })
 
       if (addTaskBtn === null) {
-        const addTaskBtnNew = document.createElement('a');
-        addTaskBtnNew.addEventListener("click", createTodo);  
-        addTaskBtnNew.textContent = "Add Task";
-        addTaskBtnNew.classList.add('addTask');
-        tasksContainer.appendChild(addTaskBtnNew);
+        addTaskButton();
       }
     })
   }

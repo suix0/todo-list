@@ -3,6 +3,7 @@ import editTask from './editTodo.js';
 import { projectsFactory } from './projects.js';
 import { deleteProjectProperty, storeTasksDomContent, storeToLocalStorage, resetTasksDomContent, defaultCounter } from './storage.js';
 import createTodo from './createTodo.js';
+import { format } from 'date-fns';
 
 function setAttributes(element, attributes) {
   for (const key in attributes) {
@@ -269,7 +270,7 @@ function createTask(container, task, taskNumber) {
 
   checkButton.addEventListener('click', () => {
     setTimeout(() => {
-      deleteTaskFromObject(projectsFactory.getProjects(), deleteBtn.dataset.deleteBtnNumber);
+      deleteTaskFromObject(projectsFactory.getProjects(), projectsFactory.getCurrentProjectName(), deleteBtn.dataset.deleteBtnNumber);
       taskContainer.remove();
     }, 1000);
   })
@@ -289,7 +290,7 @@ function createTask(container, task, taskNumber) {
   if (task.dueDate !== "") {
     const taskDueDateDom = document.createElement("p");
     taskDueDateDom.classList.add(`taskDueDate${taskNumber}`);
-    taskDueDateDom.textContent = task.dueDate;
+    taskDueDateDom.textContent = `Due on ${format(task.dueDate, "PPPPpppp")}`;
     taskDetails.appendChild(taskDueDateDom);
   }
 
@@ -367,10 +368,10 @@ function editTaskDom(taskToEdit, taskToEditDiv, taskNumber, task) {
     if (taskDueDateDom === null) {
       const newTaskDueDateDom = document.createElement("p");
       newTaskDueDateDom.classList.add(`taskDueDate${taskNumber}`);
-      newTaskDueDateDom.textContent = task.dueDate;
+      newTaskDueDateDom.textContent = `Due on ${format(task.dueDate, "PPPPpppp")}`;
       taskToEditDiv.appendChild(newTaskDueDateDom);
     } else {
-      taskDueDateDom.textContent = task.dueDate;
+      taskDueDateDom.textContent = `Due on ${format(task.dueDate, "PPPPpppp")}`;
     }
   } else {
     const taskDueDateDom = document.querySelector(`.taskDueDate${taskNumber}`);
@@ -436,8 +437,6 @@ function displayProjects(bucket, projectTitleName) {
       })
     })
   projectsFactory.setProjectNumber(project, projectTitleName, projectTitleHolder);
-  // projectsFactory.projectCounterIncrease();
-  // bucket++;
 }
 
 function editTaskObject(object, projectName, taskNumber, newTask) {

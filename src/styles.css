@@ -1,14 +1,15 @@
 :root {
-  --main-clr: #F8F4E1;
-  --secondaray-clr: #AF8F6F;
-  --tertairy-clr: #74512D;
-  --last-clr: #543310;
+  --main-clr: #EEEDEB;
+  --secondaray-clr: #E0CCBE;
+  --tertairy-clr: #747264;
+  --last-clr: #3C3633;
 }
 
 body {
   display: flex;
-  /* justify-content: start; */
-
+  flex-direction: column;
+  justify-content: start;
+  font-family: "Poppins", sans-serif;
   margin: 0;
   background-color: var(--main-clr);
   color: var(--last-clr);
@@ -72,7 +73,7 @@ form {
   align-items: center;
 
   color: var(--last-clr);
-  font-weight: bold;
+  /* font-weight: bold; */
 
   font-size: 1.2rem;
   gap: 12px;
@@ -83,7 +84,7 @@ form > button {
   width: 30%;
 
   font-size: 1rem;
-  font-weight: bold;
+  /* font-weight: bold; */
   background-color: var(--secondaray-clr);
   color: var(--main-clr);
   border: 1px solid var(--last-clr);
@@ -109,10 +110,23 @@ select {
   padding: 4px;
 }
 
+header {
+  background-color: var(--secondaray-clr);
+}
+
+header > h3 {
+  color: var(--last-clr);
+  padding: 1.5rem 1.5rem 1.5rem 1rem;
+  font-size: 2rem;
+}
+
+.container {
+  display: flex;
+}
 
 .addProject {
-  font-size: 2rem;
-  font-weight: 500;
+  font-size: 1.3rem;
+  /* font-weight: 500; */
 
 }
 
@@ -134,8 +148,8 @@ select {
 }
 
 .addTask {
-  font-size: 2rem;
-  font-weight: 500;
+  font-size: 1.3rem;
+  /* font-weight: 500; */
 }
 
 .task {
