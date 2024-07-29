@@ -1,7 +1,8 @@
 import './styles.css';
 import createTodo from './createTodo.js';
 import { createProject, projectsFactory } from './projects.js';
-import { deleteProjectProperty, renderStoredTaskContent, resetTasksDomContent } from './storage.js';
+import { deleteProjectProperty, renderStoredTaskContent, resetTasksDomContent, renderStoredProjectsContent, storeToLocalStorage } from './storage.js';
+import { displayProjects, projectsDom, addTaskButton, taskCounter } from './dom.js';
 
 export default function task(title, description, dueDate, priority, taskNumber) {
   let newTitle = "";
@@ -24,45 +25,45 @@ export default function task(title, description, dueDate, priority, taskNumber) 
   return { title, description, dueDate, priority, taskNumber, getTaskNumber }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // load the tasks in display
+document.addEventListener('DOMContentLoaded', () => { 
+  if (localStorage.getItem("currentProjName")) {
+    projectsFactory.updateCurrentProjectName(JSON.parse(localStorage.getItem("currentProjName")).name)
+  }
+
+  if (localStorage.getItem("totalProjectsTracker")) {
+    projectsFactory.updateProjectCounter(JSON.parse(localStorage.getItem("totalProjectsTracker")).total);
+  }
+
+  if (localStorage.getItem("taskCounter")) {
+    taskCounter.updateCount(JSON.parse(localStorage.getItem("taskCounter")).count)
+  }
+  
+  // render projects if it exists in local storage
+  if (localStorage.getItem("projects")) {
+    let counterProj = JSON.parse(localStorage.getItem("projects"));
+    if (counterProj.currentProjNumberTracker) {
+      projectsFactory.updateProjectNumber(JSON.parse(localStorage.getItem("projects")).currentProjNumberTracker);
+    } 
+
+    if (Object.keys(JSON.parse(localStorage.getItem("projects"))).length !== 1) {
+      addTaskButton();
+      let newProjects = JSON.parse(localStorage.getItem("projects"));
+      projectsFactory.updateProjects(newProjects);
+      renderStoredProjectsContent();
+
+    }
+  } else {
+      addTaskButton();
+      displayProjects(projectsFactory.getProjectNumber(), "My Day");
+      projectsFactory.projectCounterIncrease();
+      storeToLocalStorage("projects", projectsFactory.getProjects());
+  }
+
+  // load the tasks in display if it exists in local storage
   if (localStorage.getItem("tasksDom")) {
     renderStoredTaskContent();
   }
 
-  const addTaskBtn = document.querySelector(".addTask");
-  addTaskBtn.addEventListener("click", createTodo);  
-
   const addProjBtn = document.querySelector('.addProject');
   addProjBtn.addEventListener('click', createProject);
-
-  const defaultProj = document.querySelector('[data-project-number="0"]');
-  const defaultProjSpan = document.querySelector('.defaultSpan');
-  projectsFactory.setProjectNumber(defaultProj, defaultProjSpan);
-
-  const defaultProjDeleteBtn = document.querySelector('[data-delete-btn-number="0"]');
-  
-  defaultProjDeleteBtn.addEventListener('click', () => {
-    console.log(projectsFactory.getProjects());
-
-    Object.keys(projectsFactory.getProjects()).forEach(projects => {
-      if (projects === defaultProjDeleteBtn.getAttribute('data-delete-btn-number')) {
-        delete projectsFactory.getProjects()[projects];
-        deleteProjectProperty(defaultProjDeleteBtn.getAttribute('data-delete-btn-number'));
-        // delete tasks in dom if tasks in display is from project to be deleted
-        if (parseInt(projectsFactory.getProjectNumber()) === parseInt(defaultProjDeleteBtn.getAttribute('data-delete-btn-number'))) {
-          const tasks = document.querySelectorAll('.task');
-          const addTaskBtn = document.querySelector('.addTask');
-          resetTasksDomContent();
-          [...tasks].forEach(task => {
-            task.remove();
-          })
-          addTaskBtn.remove();
-        }
-        defaultProj.remove();
-        console.log(projectsFactory.getProjects());
-      }
-    })
-
-  })
 })

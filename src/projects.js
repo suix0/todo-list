@@ -1,64 +1,69 @@
 import { createAddProjectForm, openModal, closeModal, displayProjects, createTask, tasksDom, projectsDom, taskCounter } from "./dom";
 import createTodo from "./createTodo";
-import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage, resetTasksDomContent } from "./storage";
+import { storeToLocalStorage, addNewTaskLocalStorage, addNewProjectLocalStorage, resetTasksDomContent, defaultCounter } from "./storage";
 
 // Create a projects factory
 export const projectsFactory = (() => {
+  let projectCount = 0;
+
   let projects = {
-    "0": [],
+    "0": {"My Day": []},
+    "currentProjNumberTracker": 0,
   };
 
+  
   let projectNumber = "0";
+  
 
-  let projectCount = 1;
-
-  function addTaskToProject(projectNum, task) {
+  let currentProjName = "My Day";
+  
+  function addTaskToProject(projectNum, projectName, task) {
+    console.log(projectName);
     if (projectNum) {
-      projects[projectNum].push(task);
-      addNewTaskLocalStorage(projectNum, task);
+      projects[projectNum][projectName].push(task);
+      addNewTaskLocalStorage(projectNum, projectName, task);
     }
   }
-
-  function addProject(projectNum) {
-    projects[projectNum] = [];
+  
+  function addProject(projectNum, projectName) {
+    console.log(projectNum);
+    projects[projectNum] = {[projectName]: []};
     storeToLocalStorage("projects", projects);
-    addNewProjectLocalStorage(projectNum, localStorage.getItem("projects"));
+  }
+
+  function updateCurrentProjectName(newName) {
+    currentProjName = newName;
   }
 
   // when a user clicks on a project, update the current project number
   // and also update the display of tasks matching that specific project's 
   //tasks
-  function setProjectNumber(project, projectClickHolder) {
+  function setProjectNumber(project, projectTitleName, projectClickHolder) {
     projectClickHolder.addEventListener('click', () => {
       projectNumber = project.getAttribute('data-project-number');
+      currentProjName = projectTitleName;
+      storeToLocalStorage("currentProjName", {name: projectTitleName})
 
+      projects.currentProjNumberTracker = parseInt(projectNumber);
+      localStorage.removeItem("projects");
+      localStorage.setItem("projects", JSON.stringify(projects));
       // remove the current tasks 
       const tasks = document.querySelectorAll('.task');
-      const tasksContainer = document.querySelector('.tasks');
+      const tasksContainer = document.querySelector('.tasksContainer');
       const addTaskBtn = document.querySelector('.addTask');
-
-      if (projectNumber === "0") {
-        project.dataset.clicked = true;
-        if (project.dataset.clicked === true) {
-          resetTasksDomContent();
-          project.dataset.clicked = false;
-        }
-      } else {
-        resetTasksDomContent();
-      }
-
+      
+      
+      resetTasksDomContent();
+      
       tasksDom.resetTasks();
       [...tasks].forEach(task => {
         task.remove();
       })
       
-      tasksDom.resetTasks();
-
-      projects[projectNumber].forEach(task => {
-        createTask(tasksContainer, task, task.getTaskNumber());
+      console.log(projects);
+      projects[projectNumber][projectTitleName].forEach(task => {
+        createTask(tasksContainer, task, task.taskNumber);
       })
-
-      console.log(tasksDom.getTasksDomArr());
 
       if (addTaskBtn === null) {
         const addTaskBtnNew = document.createElement('a');
@@ -81,13 +86,28 @@ export const projectsFactory = (() => {
   function getProjectCount() {
     return projectCount;
   }
+  function updateProjectNumber(newNum) {
+    projectNumber = newNum;
+  }
 
   function projectCounterIncrease() {
     projectCount++;
+    storeToLocalStorage("totalProjectsTracker", {total: projectCount});
   }
 
+  function updateProjectCounter(num) {
+    projectCount = num;
+  }
 
-  return { addTaskToProject, addProject, getProjects, getProjectCount, projectCounterIncrease, setProjectNumber, getProjectNumber }; 
+  function getCurrentProjectName() {
+    return currentProjName;
+  }
+
+  function updateProjects(newProj) {
+    projects = newProj;
+  }
+
+  return { updateProjectCounter, updateCurrentProjectName, updateProjectNumber,  getCurrentProjectName, updateProjects, addTaskToProject, addProject, getProjects, getProjectCount, projectCounterIncrease, setProjectNumber, getProjectNumber }; 
 })()
 
 // Make a function to add a project
@@ -106,10 +126,10 @@ export function createProject() {
     const projectTitleName = formElements.projectName.value;
 
     // create and append the project to the container;
-    displayProjects(projectTitleName);
+    displayProjects(projectsFactory.getProjectCount(), projectTitleName);
 
     // Add newly created object to the projects object in the project factory
-    projectsFactory.addProject(String(projectsFactory.getProjectCount()));
+    projectsFactory.addProject(String(projectsFactory.getProjectCount()), projectTitleName);
 
     projectsFactory.projectCounterIncrease();
     closeModal(modal);
@@ -117,4 +137,3 @@ export function createProject() {
     modal.remove();
   });
 }
-

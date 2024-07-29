@@ -35,8 +35,7 @@ export default function createTodo() {
     taskCounter.increaseCount();
 
     // Add the newly create task to its corresponding project
-    projectsFactory.addTaskToProject(projectsFactory.getProjectNumber(), newTask);
-
+    projectsFactory.addTaskToProject(projectsFactory.getProjectNumber(), projectsFactory.getCurrentProjectName(), newTask);
 
     // Close form
     closeModal(modal);

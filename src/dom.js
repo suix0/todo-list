@@ -1,8 +1,8 @@
 import taskFactory from './index.js';
 import editTask from './editTodo.js';
 import { projectsFactory } from './projects.js';
-import { deleteProjectProperty, editNewTaskLocalStorage, deleteTaskLocalStorage, storeTasksDomContent, storeToLocalStorage, resetTasksDomContent } from './storage.js';
-
+import { deleteProjectProperty, storeTasksDomContent, storeToLocalStorage, resetTasksDomContent, defaultCounter } from './storage.js';
+import createTodo from './createTodo.js';
 
 function setAttributes(element, attributes) {
   for (const key in attributes) {
@@ -192,13 +192,18 @@ const taskCounter = (() => {
 
   function increaseCount() {
     count++;
+    storeToLocalStorage("taskCounter", {count: count})
   }
 
   function resetCount() {
     count = 0;
   }
 
-  return { getCount, increaseCount, resetCount }
+  function updateCount(newCount) {
+    count = newCount
+  }
+
+  return { updateCount, getCount, increaseCount, resetCount }
 })()
 
 const tasksDom = (() => {
@@ -210,7 +215,6 @@ const tasksDom = (() => {
     tasks["taskInDisplay"].push(task);
     getTasksDomArr()
     storeToLocalStorage("tasksDom", tasks);
-    console.log(tasks);
   }
 
   function resetTasks() {
@@ -231,6 +235,8 @@ const tasksDom = (() => {
         tasks["taskInDisplay"].splice(index, 0, newTask);
       }
     })
+    localStorage.removeItem("tasksDom");
+    localStorage.setItem("tasksDom", JSON.stringify(tasks));
   }
 
   function deleteTask(taskNumber) { 
@@ -240,6 +246,8 @@ const tasksDom = (() => {
         tasks["taskInDisplay"].splice(index, 1);
       }
     })
+    localStorage.removeItem("tasksDom");
+    localStorage.setItem("tasksDom", JSON.stringify(tasks));
   }
 
   return { pushToTaskDom, resetTasks, getTasksDomArr, deleteTask, editTask }
@@ -324,9 +332,8 @@ function createTask(container, task, taskNumber) {
 
   // delete corresponding task from dom and object when clicked
   deleteBtn.addEventListener('click', () => {
-    deleteTaskFromObject(projectsFactory.getProjects(), deleteBtn.dataset.deleteBtnNumber);
+    deleteTaskFromObject(projectsFactory.getProjects(), projectsFactory.getCurrentProjectName(), deleteBtn.dataset.deleteBtnNumber);
     taskContainer.remove();
-    console.log(projectsFactory.getProjects());
   })
   taskContainer.appendChild(deleteBtn);
   container.appendChild(taskContainer);
@@ -373,48 +380,16 @@ function editTaskDom(taskToEdit, taskToEditDiv, taskNumber, task) {
   }
   console.log(projectsFactory.getProjects())
 
-  editTaskObject(projectsFactory.getProjects(), taskNumber, task)
+  editTaskObject(projectsFactory.getProjects(), projectsFactory.getCurrentProjectName(), taskNumber, task)
 }
 
-const projectsDom = (() => {
-  let projects = { 
-    "My Day": "0",
-  };
-
-  function pushToProjectDom(projectName, projectNumber) {
-    projects[projectName] = String(projectNumber);
-    getProjectDomArr();
-    storeToLocalStorage("projectsDom", projects);
-  }
-
-  function resetProjects() {
-    projects = {}
-  }
-
-  function getProjectDomArr() {
-    return projects;
-  }
-
-  function deleteProject(projectNum) { 
-    Object.keys(projects).forEach(project => {
-      if (projects[project] === projectNum) {
-        delete projects[project];
-      }
-    })
-    storeToLocalStorage("projectsDom", projects);
-  }
-
-  return { pushToProjectDom, resetProjects, deleteProject, getProjectDomArr }
-})()
-
-let bucket = 1
-function displayProjects(projectTitleName) {
-  projectsDom.pushToProjectDom(projectTitleName)
+// let bucket = 0
+function displayProjects(bucket, projectTitleName) {
   const projectContainer = document.querySelector("ul");
   const project = document.createElement("li");
 
   const projectTitleHolder = document.createElement("span");
-  
+
   projectTitleHolder.textContent = projectTitleName;
   project.setAttribute('data-project-number', bucket);
   project.appendChild(projectTitleHolder);
@@ -440,58 +415,79 @@ function displayProjects(projectTitleName) {
 
   // delete corresponding task from dom and object when clicked
   deleteBtn.addEventListener('click', () => {
-    Object.keys(projectsFactory.getProjects()).forEach(projects => {
-      if (projects === deleteBtn.getAttribute('data-delete-btn-number')) {
-        delete projectsFactory.getProjects()[projects];
-        deleteProjectProperty(deleteBtn.getAttribute('data-delete-btn-number'))
-        // delete tasks in dom if tasks in display is from project to be deleted
-        if (parseInt(projectsFactory.getProjectNumber()) === parseInt(deleteBtn.getAttribute('data-delete-btn-number'))) {
-          const tasks = document.querySelectorAll('.task');
-          const addTaskBtn = document.querySelector('.addTask');
-          resetTasksDomContent();
-          [...tasks].forEach(task => {
-            task.remove();
-          })
-          addTaskBtn.remove();
-        }
-        project.remove();
-
-        console.log(projectsFactory.getProjects());
-      }
+      Object.keys(projectsFactory.getProjects()).forEach(projects => {
+        if (projects === deleteBtn.getAttribute('data-delete-btn-number')) {
+          delete projectsFactory.getProjects()[projects];
+          deleteProjectProperty(deleteBtn.getAttribute('data-delete-btn-number'))
+          console.log(projectsFactory.getProjectNumber());
+          // delete tasks in dom if tasks in display is from project to be deleted
+          if (parseInt(projectsFactory.getProjectNumber()) === parseInt(deleteBtn.getAttribute('data-delete-btn-number'))) {
+            const tasks = document.querySelectorAll('.task');
+            const addTaskBtn = document.querySelector('.addTask');
+            resetTasksDomContent();
+            [...tasks].forEach(task => {
+              task.remove();
+            })
+            localStorage.removeItem("tasksDom");
+            addTaskBtn.remove();
+          }
+          project.remove();
+        } 
+      })
     })
-  })
-
-  projectsFactory.setProjectNumber(project, projectTitleHolder);
-  projectsDom.pushToProjectDom(projectTitleName, bucket);
-  bucket++;
+  projectsFactory.setProjectNumber(project, projectTitleName, projectTitleHolder);
+  // projectsFactory.projectCounterIncrease();
+  // bucket++;
 }
 
-function editTaskObject(object, taskNumber, newTask) {
-  Object.keys(object).forEach(key => {
-    object[key].forEach(task => {
-      if (task.getTaskNumber() === parseInt(taskNumber)) {
-        const index = object[key].indexOf(task);
-        object[key].splice(index, 1);
-        object[key].splice(index, 0, newTask);
+function editTaskObject(object, projectName, taskNumber, newTask) {
+  let keysArr = Object.keys(object);
+
+  keysArr.forEach(keys => {
+    Object.keys(object[keys]).forEach(key => {
+      if (projectName === key) {
+        object[keys][key].forEach(task => {
+          if (task.taskNumber === parseInt(taskNumber)) {
+            const index = object[keys][key].indexOf(task);
+            object[keys][key].splice(index, 1);
+            object[keys][key].splice(index, 0, newTask);
+          }
+        })
       }
     })
   })
-  editNewTaskLocalStorage(taskNumber, newTask);
+  localStorage.removeItem("projects");
+  localStorage.setItem("projects", JSON.stringify(object));
+  tasksDom.editTask(taskNumber, newTask);
 }
 
 // algorithm to delete a specific element from the array values of each object properties
-function deleteTaskFromObject(object, deleteBtnNumber) {   
-  // iterate through the object
-  Object.keys(object).forEach(key => {
-    object[key].forEach(task => {
-      // if an object in the array has the task number equal to the delete task number, delete the value
-      if (task.getTaskNumber() === parseInt(deleteBtnNumber)) {
-        const index = object[key].indexOf(task);
-        object[key].splice(index, 1);
+function deleteTaskFromObject(object, projectName, deleteBtnNumber) {   
+  let keysArr = Object.keys(object);
+  keysArr.forEach(keys => {
+    Object.keys(object[keys]).forEach(key => {
+      if (projectName === key) {
+        object[keys][key].forEach(task => {
+          if (task.taskNumber === parseInt(deleteBtnNumber)) {
+            const index = object[keys][key].indexOf(task);
+            object[keys][key].splice(index, 1);
+          }
+        })
       }
     })
   })
-  deleteTaskLocalStorage(deleteBtnNumber);
+  localStorage.removeItem("projects");
+  localStorage.setItem("projects", JSON.stringify(object));
+  tasksDom.deleteTask(deleteBtnNumber);
 }
 
-export { taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects, tasksDom, projectsDom }
+function addTaskButton() {
+  const addTaskBtnNew = document.createElement('a');
+  const tasksContainer = document.querySelector(".tasksContainer");
+  addTaskBtnNew.addEventListener("click", createTodo);  
+  addTaskBtnNew.textContent = "Add Task";
+  addTaskBtnNew.classList.add('addTask');
+  tasksContainer.appendChild(addTaskBtnNew);
+}
+
+export { addTaskButton,taskCounter, createForm, openModal, closeModal, createTask, editTaskDom, createAddProjectForm, displayProjects, tasksDom }
